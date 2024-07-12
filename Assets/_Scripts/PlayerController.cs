@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AnimController animController;
     [SerializeField] private CharacterController characterController;
     [SerializeField] private InputActionReference movement;
+    [SerializeField] private InputActionReference punchAction;
     [SerializeField] private float speed = 3.0f;
     private Vector3 prevInput;
     private Camera cameraReference;
@@ -15,6 +16,21 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         cameraReference = Camera.main;
+    }
+
+    private void OnEnable()
+    {
+        punchAction.action.started += Punch;
+    }
+
+    private void OnDisable()
+    {
+        punchAction.action.started -= Punch;
+    }
+
+    void Punch(InputAction.CallbackContext context)
+    {
+        animController.RequestPunch();
     }
 
     private void UpdateMovement(Vector3 movement)
@@ -29,7 +45,7 @@ public class PlayerController : MonoBehaviour
         Vector3 adjustedMovement = motionRotation * movement;
         adjustedMovement.y = 0.0f;
 
-        characterController.SimpleMove(adjustedMovement * speed);
+        characterController.Move(adjustedMovement * (speed * Time.deltaTime));
 
         if (movement.magnitude < 0.1f)
         {
@@ -40,9 +56,13 @@ public class PlayerController : MonoBehaviour
         newRotationVector.y = 0;
         newRotationVector.Normalize();
 
-        Quaternion gameObjectRotation = Quaternion.LookRotation(newRotationVector);
+        float angle = Mathf.Atan2(adjustedMovement.x, adjustedMovement.z) * Mathf.Rad2Deg 
+            + cameraReference.transform.rotation.eulerAngles.y;
 
-        this.transform.rotation = gameObjectRotation;
+        Quaternion gameObjectRotation = Quaternion.AngleAxis(angle, Vector3.up);
+        //Quaternion gameObjectRotation = Quaternion.LookRotation(newRotationVector);
+
+        this.animController.transform.rotation = gameObjectRotation;
     }
 
     private void Update()

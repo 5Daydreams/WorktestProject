@@ -35,7 +35,7 @@ public class AnimController : MonoBehaviour
     }
 
     [ContextMenu("RequestPunchDebug")]
-    void RequestPunch()
+    public void RequestPunch()
     {
         animator.SetTrigger(triggerName);
     }
