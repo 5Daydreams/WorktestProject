@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Stackable : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Stackable next;
+
+    public Stackable Next
     {
-        
+        get => next;
+        set
+        {
+            if(next == null) 
+            {
+                next = value;
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }
