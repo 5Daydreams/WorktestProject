@@ -26,18 +26,13 @@ public class CameraFollowTarget : MonoBehaviour
 
     void FollowBehavior()
     {
-        Vector3 currentPosition = transform.position;
+        Vector3 desiredPosition = target.forward * -1.0f;
 
-        Vector3 desiredPosition = transform.position - target.position;
-        desiredPosition.y = 0.0f;
-        desiredPosition.Normalize();
-
-        float horizontalDistance = Mathf.Sqrt((followDistance * followDistance) - (cameraHeight * cameraHeight));
+        float horizontalDistance = Mathf.Sqrt(Mathf.Abs((followDistance * followDistance) - (cameraHeight * cameraHeight)));
         desiredPosition *= horizontalDistance;
-
         desiredPosition.y = cameraHeight;
 
-        transform.position = Vector3.Lerp(currentPosition, desiredPosition, Time.deltaTime * followLerpSpeed);
+        transform.position = Vector3.Lerp(transform.position, desiredPosition + target.position, Time.deltaTime * followLerpSpeed);
     }
 
     void RotationBehavior()
