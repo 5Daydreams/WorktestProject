@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class Stackable : MonoBehaviour
 {
-    private Stackable next;
+    [SerializeField] private Vector3 nextGap;
+    [SerializeField] private float lerpSpeed;
+    public Stackable next;
 
-    public Stackable Next
+
+    private void Update()
     {
-        get => next;
-        set
+        if(next == null)
         {
-            if(next == null) 
-            {
-                next = value;
-            }
+            return;
         }
+
+        Vector3 positionLerp = Vector3.Lerp(next.transform.position, transform.position + nextGap, Time.deltaTime * lerpSpeed);
     }
-
-
 }

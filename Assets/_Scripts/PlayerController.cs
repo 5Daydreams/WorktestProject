@@ -37,32 +37,17 @@ public class PlayerController : MonoBehaviour
     {
         animController.SetBlendValue(movement.magnitude);
 
-        Vector3 tempDirection = (transform.position - cameraReference.transform.position);
-        tempDirection.y = 0;
-
-        Quaternion motionRotation = Quaternion.LookRotation(tempDirection);
-
-        Vector3 adjustedMovement = motionRotation * movement;
-        adjustedMovement.y = 0.0f;
-
-        characterController.Move(adjustedMovement * (speed * Time.deltaTime));
-
         if (movement.magnitude < 0.1f)
         {
             return;
         }
 
-        Vector3 newRotationVector = (transform.position - cameraReference.transform.position).normalized + adjustedMovement;
-        newRotationVector.y = 0;
-        newRotationVector.Normalize();
-
-        float angle = Mathf.Atan2(adjustedMovement.x, adjustedMovement.z) * Mathf.Rad2Deg 
+        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg
             + cameraReference.transform.rotation.eulerAngles.y;
 
-        Quaternion gameObjectRotation = Quaternion.AngleAxis(angle, Vector3.up);
-        //Quaternion gameObjectRotation = Quaternion.LookRotation(newRotationVector);
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
 
-        this.animController.transform.rotation = gameObjectRotation;
+        characterController.Move(transform.forward * (speed * Time.deltaTime));
     }
 
     private void Update()
@@ -71,7 +56,7 @@ public class PlayerController : MonoBehaviour
         Vector3 newInput = new Vector3(rawInput.x, 0.0f, rawInput.y);
 
         // Smoothing the end of the movement input
-        Vector3 currentInput = Vector3.Lerp(prevInput, newInput, Time.deltaTime * 8.0f);
+        Vector3 currentInput = Vector3.Lerp(prevInput, newInput, Time.deltaTime * 10.0f);
         UpdateMovement(currentInput);
         prevInput = currentInput;
     }
