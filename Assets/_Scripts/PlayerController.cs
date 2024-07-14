@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private AnimController animController;
     [SerializeField] private CharacterController characterController;
+    [SerializeField] private Stackable playerStackable;
     [SerializeField] private InputActionReference movement;
     [SerializeField] private InputActionReference punchAction;
     [SerializeField] private float speed = 3.0f;
@@ -16,6 +17,16 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         cameraReference = Camera.main;
+
+        if (playerStackable == null)
+        {
+            playerStackable = this.GetComponent<Stackable>();
+
+            if (playerStackable == null)
+            {
+                Debug.LogError("Could not find player's Stackable Component");
+            }
+        }
     }
 
     private void OnEnable()
@@ -39,15 +50,23 @@ public class PlayerController : MonoBehaviour
 
         if (movement.magnitude < 0.1f)
         {
-            return;
+            playerStackable.ApplyVelocity(transform.forward * 0.001f);
+        }
+        else
+        {
+            float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg
+                + cameraReference.transform.rotation.eulerAngles.y;
+
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+
+            Vector3 displacement = transform.forward * speed;
+
+            characterController.Move(displacement * Time.deltaTime);
+
+            playerStackable.ApplyVelocity(displacement);
         }
 
-        float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg
-            + cameraReference.transform.rotation.eulerAngles.y;
-
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
-
-        characterController.Move(transform.forward * (speed * Time.deltaTime));
+        playerStackable.AdjustStackable();
     }
 
     private void Update()
