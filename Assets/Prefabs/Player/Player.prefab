@@ -727,6 +727,7 @@ MonoBehaviour:
   movement: {fileID: 6303053466461589576, guid: 6288fb5f03ba2fe4ea840c19eda7047f, type: 3}
   punchAction: {fileID: -7797534189109556145, guid: 6288fb5f03ba2fe4ea840c19eda7047f, type: 3}
   speed: 5
+  maxStack: 1
 --- !u!114 &7131101666582631768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -741,6 +742,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stackDistance: 4
   wobbleIntensity: 1
+  removalVfx: {fileID: 0}
+  meshObject: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &1518772147489046558
 GameObject:
